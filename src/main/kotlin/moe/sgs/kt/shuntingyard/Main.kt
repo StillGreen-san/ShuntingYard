@@ -3,23 +3,17 @@ package moe.sgs.kt.shuntingyard
 const val INPUT_PREFIX = "|> "
 const val OUTPUT_PREFIX = "|: "
 
-class Token
-
-class State {
-    fun process(input: String): Result<Token> {
-        TODO()
-    }
-}
-
 fun main() {
     val state = State()
     try {
         while (true) {
             print(INPUT_PREFIX)
             val input = readln()
-            val result = state.process(input).getOrThrow()
+            val tokens = input.toInfixSequence()
+            val rpn = tokens.toReversePolishSequence()
+            val result = solve(rpn, state).getOrThrow()
             print(OUTPUT_PREFIX)
-            print(result)
+            println(result)
         }
     } catch (e: Exception) {
         print("\n\nExit: ")
