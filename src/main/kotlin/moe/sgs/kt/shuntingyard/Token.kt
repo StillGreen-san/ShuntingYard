@@ -9,30 +9,32 @@ enum class Associativity {
     RightAssociative,
 }
 
-sealed class Token(val string: String) {
-    class Number(val value: BigDecimal) : Token(value.toString())
-
-    sealed class Identifier(string: String) : Token(string) {
-        class Value(string: String) : Identifier(string)
-        class Function(
-            val numArgs: Int,
-            val function: TokenFunction,
-            string: String
-        ) : Identifier(string)
+sealed class Token {
+    data class Number(val value: BigDecimal, val string: String = value.toString()) : Token() {
+        constructor(int: Int) : this(BigDecimal(int))
     }
 
-    class Operator(
+    sealed class Identifier : Token() {
+        data class Value(val string: String) : Identifier()
+        data class Function(
+            val numArgs: Int,
+            val function: TokenFunction,
+            val string: String
+        ) : Identifier()
+    }
+
+    data class Operator(
         val numArgs: Int,
         val function: TokenFunction,
         val precedent: Int,
         val associativity: Associativity,
-        string: String
-    ) : Token(string)
+        val string: String
+    ) : Token()
 
-    data object Assignment : Token("=")
+    data class Assignment(val string: String = "=") : Token()
 
-    data object Komma : Token(",")
-    data object OpenParen : Token("(")
-    data object CloseParen : Token(")")
-    data object None : Token("")
+    data class Komma(val string: String = ",") : Token()
+    data class OpenParen(val string: String = "(") : Token()
+    data class CloseParen(val string: String = ")") : Token()
+    data class None(val string: String = "") : Token()
 }
