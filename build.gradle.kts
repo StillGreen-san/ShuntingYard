@@ -11,6 +11,8 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("ch.obermuhlner:big-math:2.3.2") //TODO figure out this mess
+    implementation("ch.obermuhlner:kotlin-big-math:2.3.0")
 }
 
 tasks.test {
