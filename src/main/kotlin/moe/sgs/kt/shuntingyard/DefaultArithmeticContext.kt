@@ -1,0 +1,25 @@
+package moe.sgs.kt.shuntingyard
+
+import java.math.MathContext
+
+class DefaultArithmeticContext : ArithmeticContext {
+    val mathContext: MathContext = MathContext.DECIMAL128
+    override val functions: Map<String, TokenFunctionData> = mapOf(
+        "max" to TokenFunctionData.make { l, r -> l.max(r) },
+        "min" to TokenFunctionData.make { l, r -> l.min(r) },
+        "abs" to TokenFunctionData.make { l -> l.abs() },
+    )
+    override val operators: Map<String, TokenOperatorData> = mapOf(
+        "=" to TokenOperatorData.make(1, Associativity.RightAssociative) { _, _ -> throw NoSuchMethodException() },
+        "+" to TokenOperatorData.make(2, Associativity.LeftAssociative) { l, r -> l.add(r, mathContext) },
+        "-" to TokenOperatorData.make(2, Associativity.LeftAssociative) { l, r -> l.subtract(r, mathContext) },
+        "*" to TokenOperatorData.make(3, Associativity.LeftAssociative) { l, r -> l.multiply(r, mathContext) },
+        "/" to TokenOperatorData.make(3, Associativity.LeftAssociative) { l, r -> l.divide(r, mathContext) },
+        "^" to TokenOperatorData.make(4, Associativity.RightAssociative) { l, r ->
+            l.pow(
+                r.intValueExact(),
+                mathContext
+            )
+        },
+    )
+}

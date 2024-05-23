@@ -1,6 +1,6 @@
 package moe.sgs.kt.shuntingyard
 
-class InfixSequence(private val str: String) : Sequence<Token> {
+class InfixSequence(val str: String, val arithmeticContext: ArithmeticContext) : Sequence<Token> {
     override fun iterator() = object : Iterator<Token> {
 
         override fun hasNext() = false
@@ -10,4 +10,5 @@ class InfixSequence(private val str: String) : Sequence<Token> {
     }
 }
 
-fun String.toInfixSequence(): InfixSequence = InfixSequence(this)
+fun String.toInfixSequence(arithmeticContext: ArithmeticContext = DefaultArithmeticContext()): InfixSequence =
+    InfixSequence(this, arithmeticContext)
