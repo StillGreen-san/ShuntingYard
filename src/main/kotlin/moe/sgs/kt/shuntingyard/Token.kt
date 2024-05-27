@@ -14,8 +14,8 @@ sealed class Token {
         get() = when (this) {
             is Assignment -> (this as Assignment).string
             is CloseParen -> (this as CloseParen).string
-            is Identifier.Function -> (this as Identifier.Function).string
-            is Identifier.Value -> (this as Identifier.Value).string
+            is Function -> (this as Function).string
+            is Value -> (this as Value).string
             is Komma -> (this as Komma).string
             is None -> (this as None).string
             is Number -> (this as Number).string
@@ -27,13 +27,14 @@ sealed class Token {
         constructor(int: Int) : this(BigDecimal(int))
     }
 
-    sealed class Identifier : Token() {
-        data class Value(override val string: String) : Identifier()
-        data class Function(
-            override val string: String,
-            val numArgs: Int,
-            val function: TokenFunction,
-        ) : Identifier()
+    data class Value(override val string: String) : Token()
+    data class Function(
+        override val string: String,
+        val numArgs: Int,
+        val function: TokenFunction,
+    ) : Token() {
+        constructor(tokenFunctionData: TokenFunctionData)
+                : this(tokenFunctionData.name, tokenFunctionData.numArgs, tokenFunctionData.function)
     }
 
     data class Operator(
@@ -42,7 +43,15 @@ sealed class Token {
         val precedent: Int,
         val associativity: Associativity,
         val function: TokenFunction,
-    ) : Token()
+    ) : Token() {
+        constructor(tokenOperatorData: TokenOperatorData) : this(
+            tokenOperatorData.name,
+            tokenOperatorData.numArgs,
+            tokenOperatorData.precedent,
+            tokenOperatorData.associativity,
+            tokenOperatorData.function,
+        )
+    }
 
     data class Assignment(override val string: String = "=") : Token()
 
