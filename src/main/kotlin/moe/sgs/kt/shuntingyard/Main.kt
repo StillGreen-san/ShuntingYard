@@ -9,7 +9,7 @@ fun main() {
         while (true) {
             print(INPUT_PREFIX)
             val input = readln()
-            val tokens = input.toInfixSequence()
+            val tokens = input.asTokenSequence()
             val rpn = tokens.toReversePolishSequence()
             val result = solve(rpn, state).getOrThrow()
             print(OUTPUT_PREFIX)

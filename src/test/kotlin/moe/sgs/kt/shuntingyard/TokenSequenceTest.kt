@@ -4,12 +4,13 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 
-class InfixSequenceTest {
+class TokenSequenceTest {
 
     @Test
     fun operators() {
         val dac = DefaultArithmeticContext()
         val seq = "3 + 4*2 / ( 1-5) ^2^3".toInfixSequence()
+        val seq = "3 + 4*2 / ( 1-5) ^2^3".asTokenSequence()
         val it = seq.iterator()
         assertEquals(Token.Number(3), it.next())
         assertEquals(Token.Operator(dac.operators["+"]!!), it.next())
@@ -33,6 +34,7 @@ class InfixSequenceTest {
     fun identifiers() {
         val dac = DefaultArithmeticContext()
         val seq = "sin ( max(2 ,3) / 3 *PI)".toInfixSequence()
+        val seq = "sin ( max(2 ,3) / 3 *PI)".asTokenSequence()
         val it = seq.iterator()
         assertEquals(Token.Function(dac.functions["sin"]!!), it.next())
         assertEquals(Token.OpenParen(), it.next())
