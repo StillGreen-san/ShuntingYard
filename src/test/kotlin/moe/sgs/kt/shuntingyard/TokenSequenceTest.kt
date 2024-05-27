@@ -1,8 +1,8 @@
 package moe.sgs.kt.shuntingyard
 
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.util.*
 
 class TokenSequenceTest {
 
@@ -49,5 +49,16 @@ class TokenSequenceTest {
         assertFalse(it.hasNext())
     }
 
-    //TODO more tests
+    @Test
+    fun failure() {
+        val ac = object : ArithmeticContext {
+            override val functions: Map<String, TokenFunctionData> = mapOf()
+            override val operators: Map<String, TokenOperatorData> = mapOf()
+        }
+        val seq = "3+4*2/(1-5)^2^3".asTokenSequence(ac)
+        val it = seq.iterator()
+        assertEquals(Token.Number(3), it.next())
+        assertFalse(it.hasNext())
+        assertThrows(InputMismatchException::class.java) { it.next() }
+    }
 }
