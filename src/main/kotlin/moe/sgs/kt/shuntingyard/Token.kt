@@ -10,31 +10,44 @@ enum class Associativity {
 }
 
 sealed class Token {
-    data class Number(val value: BigDecimal, val string: String = value.toString()) : Token() {
+    open val string: String
+        get() = when (this) {
+            is Assignment -> (this as Assignment).string
+            is CloseParen -> (this as CloseParen).string
+            is Identifier.Function -> (this as Identifier.Function).string
+            is Identifier.Value -> (this as Identifier.Value).string
+            is Komma -> (this as Komma).string
+            is None -> (this as None).string
+            is Number -> (this as Number).string
+            is OpenParen -> (this as OpenParen).string
+            is Operator -> (this as Operator).string
+        }
+
+    data class Number(val value: BigDecimal, override val string: String = value.toString()) : Token() {
         constructor(int: Int) : this(BigDecimal(int))
     }
 
     sealed class Identifier : Token() {
-        data class Value(val string: String) : Identifier()
+        data class Value(override val string: String) : Identifier()
         data class Function(
+            override val string: String,
             val numArgs: Int,
             val function: TokenFunction,
-            val string: String
         ) : Identifier()
     }
 
     data class Operator(
+        override val string: String,
         val numArgs: Int,
-        val function: TokenFunction,
         val precedent: Int,
         val associativity: Associativity,
-        val string: String
+        val function: TokenFunction,
     ) : Token()
 
-    data class Assignment(val string: String = "=") : Token()
+    data class Assignment(override val string: String = "=") : Token()
 
-    data class Komma(val string: String = ",") : Token()
-    data class OpenParen(val string: String = "(") : Token()
-    data class CloseParen(val string: String = ")") : Token()
-    data class None(val string: String = "") : Token()
+    data class Komma(override val string: String = ",") : Token()
+    data class OpenParen(override val string: String = "(") : Token()
+    data class CloseParen(override val string: String = ")") : Token()
+    data class None(override val string: String = "") : Token()
 }
