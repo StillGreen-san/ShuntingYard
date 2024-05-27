@@ -46,6 +46,7 @@ class TokenSequenceTest {
         assertEquals(Token.Number(3), it.next())
         assertEquals(Token.Operator(dac.operators["*"]!!), it.next())
         assertEquals(Token.Value("PI"), it.next())
+        assertEquals(Token.CloseParen(), it.next())
         assertFalse(it.hasNext())
     }
 
