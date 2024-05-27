@@ -28,7 +28,7 @@ private fun makeOperatorPair(
     return name to TokenOperatorData.make(name, precedent, associativity, func)
 }
 
-class DefaultArithmeticContext : ArithmeticContext { //TODO make singleton
+object DefaultArithmeticContext : ArithmeticContext {
     val mathContext: MathContext = MathContext.DECIMAL128
     override val functions: Map<String, TokenFunctionData> = mapOf(
         makeFunctionPair("max") { l, r -> l.max(r) },

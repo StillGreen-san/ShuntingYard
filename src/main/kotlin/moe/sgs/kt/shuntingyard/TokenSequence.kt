@@ -22,5 +22,5 @@ class TokenSequence(val string: String, val arithmeticContext: ArithmeticContext
  * @param arithmeticContext defaulted to DefaultArithmeticContext
  * @return [TokenSequence]
  */
-fun String.asTokenSequence(arithmeticContext: ArithmeticContext = DefaultArithmeticContext()): TokenSequence =
+fun String.asTokenSequence(arithmeticContext: ArithmeticContext = DefaultArithmeticContext): TokenSequence =
     TokenSequence(this, arithmeticContext)

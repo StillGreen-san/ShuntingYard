@@ -8,8 +8,7 @@ class TokenSequenceTest {
 
     @Test
     fun operators() {
-        val dac = DefaultArithmeticContext()
-        val seq = "3 + 4*2 / ( 1-5) ^2^3".toInfixSequence()
+        val dac = DefaultArithmeticContext
         val seq = "3 + 4*2 / ( 1-5) ^2^3".asTokenSequence()
         val it = seq.iterator()
         assertEquals(Token.Number(3), it.next())
@@ -32,8 +31,7 @@ class TokenSequenceTest {
 
     @Test
     fun identifiers() {
-        val dac = DefaultArithmeticContext()
-        val seq = "sin ( max(2 ,3) / 3 *PI)".toInfixSequence()
+        val dac = DefaultArithmeticContext
         val seq = "sin ( max(2 ,3) / 3 *PI)".asTokenSequence()
         val it = seq.iterator()
         assertEquals(Token.Function(dac.functions["sin"]!!), it.next())
