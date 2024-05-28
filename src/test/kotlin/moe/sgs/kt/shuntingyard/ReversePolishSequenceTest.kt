@@ -31,7 +31,7 @@ class ReversePolishSequenceTest {
     @Test
     fun identifiers() {
         val dac = DefaultArithmeticContext
-        val seq = "sin(max(2,3)/3*Pi)".asTokenSequence().toReversePolishSequence()
+        val seq = "log(max(2,3)/3*Pi)".asTokenSequence().toReversePolishSequence()
         val it = seq.iterator()
         assertEquals(Token.Number(2), it.next())
         assertEquals(Token.Number(3), it.next())
@@ -40,7 +40,7 @@ class ReversePolishSequenceTest {
         assertEquals(Token.Operator(dac.operators["/"]!!), it.next())
         assertEquals(Token.Number(dac.identifiers["Pi"]!!, "Pi"), it.next())
         assertEquals(Token.Operator(dac.operators["*"]!!), it.next())
-        assertEquals(Token.Function(dac.functions["sin"]!!), it.next())
+        assertEquals(Token.Function(dac.functions["log"]!!), it.next())
         assertFalse(it.hasNext())
         assertThrows(NoSuchElementException::class.java) { it.next() }
     }

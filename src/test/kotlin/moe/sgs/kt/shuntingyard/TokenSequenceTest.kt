@@ -34,9 +34,9 @@ class TokenSequenceTest {
     @Test
     fun identifiers() {
         val dac = DefaultArithmeticContext
-        val seq = "sin ( max(2 ,3) / 3 *Pi)".asTokenSequence()
+        val seq = "log ( max(2 ,3) / 3 *Pi)".asTokenSequence()
         val it = seq.iterator()
-        assertEquals(Token.Function(dac.functions["sin"]!!), it.next())
+        assertEquals(Token.Function(dac.functions["log"]!!), it.next())
         assertEquals(Token.OpenParen(), it.next())
         assertEquals(Token.Function(dac.functions["max"]!!), it.next())
         assertEquals(Token.OpenParen(), it.next())

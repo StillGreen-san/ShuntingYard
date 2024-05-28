@@ -37,7 +37,7 @@ object DefaultArithmeticContext : ArithmeticContext { //TODO add more defaults
         makeFunctionPair("max") { l, r -> l.max(r) },
         makeFunctionPair("min") { l, r -> l.min(r) },
         makeFunctionPair("abs") { l -> l.abs() },
-        makeFunctionPair("sin") { l -> sin(l, mathContext) },
+        makeFunctionPair("log") { l -> log(l, mathContext) },
     )
     override val operators: Map<String, TokenOperatorData> = mapOf(
         makeOperatorPair("+", 2, Associativity.LeftAssociative) { l, r -> l.add(r, mathContext) },
