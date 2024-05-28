@@ -29,13 +29,19 @@ sealed class Token {
                 : this(tokenFunctionData.name, tokenFunctionData.numArgs, tokenFunctionData.function)
     }
 
+    sealed class BaseOperator : Token() {
+        abstract val precedent: Int
+        abstract val associativity: Associativity
+
+    }
+
     data class Operator(
         override val string: String,
         val numArgs: Int,
-        val precedent: Int,
-        val associativity: Associativity,
+        override val precedent: Int,
+        override val associativity: Associativity,
         val function: TokenFunction,
-    ) : Token() {
+    ) : BaseOperator() {
         constructor(tokenOperatorData: TokenOperatorData) : this(
             tokenOperatorData.name,
             tokenOperatorData.numArgs,
@@ -45,7 +51,12 @@ sealed class Token {
         )
     }
 
-    data class Assignment(override val string: String = "=") : Token()
+    data class Assignment(
+        override val string: String = "=",
+        override val precedent: Int = 1,
+        override val associativity: Associativity = Associativity.RightAssociative
+    ) : BaseOperator()
+
 
     data class Komma(override val string: String = ",") : Token()
     data class OpenParen(override val string: String = "(") : Token()

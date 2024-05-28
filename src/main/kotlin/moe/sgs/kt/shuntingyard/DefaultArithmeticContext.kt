@@ -37,7 +37,6 @@ object DefaultArithmeticContext : ArithmeticContext {
         makeFunctionPair("sin") { l -> sin(l, mathContext) },
     )
     override val operators: Map<String, TokenOperatorData> = mapOf(
-        makeOperatorPair("=", 1, Associativity.RightAssociative) { _, _ -> throw NoSuchMethodException() },
         makeOperatorPair("+", 2, Associativity.LeftAssociative) { l, r -> l.add(r, mathContext) },
         makeOperatorPair("-", 2, Associativity.LeftAssociative) { l, r -> l.subtract(r, mathContext) },
         makeOperatorPair("*", 3, Associativity.LeftAssociative) { l, r -> l.multiply(r, mathContext) },
