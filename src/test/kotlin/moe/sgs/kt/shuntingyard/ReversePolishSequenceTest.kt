@@ -25,6 +25,7 @@ class ReversePolishSequenceTest {
         assertEquals(Token.Operator(dac.operators["/"]!!), it.next())
         assertEquals(Token.Operator(dac.operators["+"]!!), it.next())
         assertFalse(it.hasNext())
+        assertThrows(NoSuchElementException::class.java) { it.next() }
     }
 
     @Test
@@ -41,6 +42,7 @@ class ReversePolishSequenceTest {
         assertEquals(Token.Operator(dac.operators["*"]!!), it.next())
         assertEquals(Token.Function(dac.functions["sin"]!!), it.next())
         assertFalse(it.hasNext())
+        assertThrows(NoSuchElementException::class.java) { it.next() }
     }
 
     @Test
@@ -53,6 +55,6 @@ class ReversePolishSequenceTest {
         val it = seq.iterator()
         assertEquals(Token.Number(3), it.next())
         assertFalse(it.hasNext())
-        assertThrows(InputMismatchException::class.java) { it.next() }
+        assertThrows(NoSuchElementException::class.java) { it.next() }
     }
 }

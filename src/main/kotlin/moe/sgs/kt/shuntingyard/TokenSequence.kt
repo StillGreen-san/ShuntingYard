@@ -1,6 +1,5 @@
 package moe.sgs.kt.shuntingyard
 
-import java.io.EOFException
 import java.math.BigDecimal
 import java.util.*
 
@@ -26,7 +25,7 @@ class TokenSequence(val string: String, val arithmeticContext: ArithmeticContext
         private fun tryNext(): Result<Token> {
             remaining = remaining.trimStart()
             if (remaining.isEmpty()) {
-                return Result.failure(EOFException("no more tokens left to parse"))
+                return Result.failure(NoSuchElementException("no more tokens left to parse"))
             }
             return tryCatch { internalNext() }.onSuccess {
                 remaining = remaining.substring(it.string.length)

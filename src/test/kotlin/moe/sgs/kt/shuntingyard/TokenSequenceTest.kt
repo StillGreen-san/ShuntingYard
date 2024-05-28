@@ -27,6 +27,7 @@ class TokenSequenceTest {
         assertEquals(Token.Operator(dac.operators["^"]!!), it.next())
         assertEquals(Token.Number(3), it.next())
         assertFalse(it.hasNext())
+        assertThrows(NoSuchElementException::class.java) { it.next() }
     }
 
     @Test
@@ -48,6 +49,7 @@ class TokenSequenceTest {
         assertEquals(Token.Value("PI"), it.next())
         assertEquals(Token.CloseParen(), it.next())
         assertFalse(it.hasNext())
+        assertThrows(NoSuchElementException::class.java) { it.next() }
     }
 
     @Test
