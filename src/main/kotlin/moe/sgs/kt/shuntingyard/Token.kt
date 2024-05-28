@@ -2,6 +2,9 @@ package moe.sgs.kt.shuntingyard
 
 import java.math.BigDecimal
 
+/**
+ * A callback function for [Token] to process a variable number of BigDecimal
+ */
 typealias TokenFunction = (Iterable<BigDecimal>) -> BigDecimal
 
 enum class Associativity {
@@ -10,18 +13,7 @@ enum class Associativity {
 }
 
 sealed class Token {
-    open val string: String
-        get() = when (this) {
-            is Assignment -> (this as Assignment).string
-            is CloseParen -> (this as CloseParen).string
-            is Function -> (this as Function).string
-            is Value -> (this as Value).string
-            is Komma -> (this as Komma).string
-            is None -> (this as None).string
-            is Number -> (this as Number).string
-            is OpenParen -> (this as OpenParen).string
-            is Operator -> (this as Operator).string
-        }
+    abstract val string: String
 
     data class Number(val value: BigDecimal, override val string: String = value.toString()) : Token() {
         constructor(int: Int) : this(BigDecimal(int))

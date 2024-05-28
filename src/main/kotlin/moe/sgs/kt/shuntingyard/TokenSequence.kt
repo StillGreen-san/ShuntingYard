@@ -28,7 +28,7 @@ class TokenSequence(val string: String, val arithmeticContext: ArithmeticContext
             if (remaining.isEmpty()) {
                 return Result.failure(EOFException("no more tokens left to parse"))
             }
-            return runCatching { internalNext() }.onSuccess {
+            return tryCatch { internalNext() }.onSuccess {
                 remaining = remaining.substring(it.string.length)
                 prevToken = it
             }

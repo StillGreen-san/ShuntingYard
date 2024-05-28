@@ -43,6 +43,10 @@ data class TokenOperatorData(
     }
 }
 
+/**
+ * Provides mappings between String and Token*Data
+ *
+ */
 interface ArithmeticContext {
     val functions: Map<String, TokenFunctionData>
     val operators: Map<String, TokenOperatorData>

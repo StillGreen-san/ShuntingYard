@@ -26,3 +26,15 @@ inline fun CharSequence.indexOfFirstOrLength(predicate: (Char) -> Boolean): Int 
     }
     return length
 }
+
+/**
+ * Calls the specified function [block] with `this` value as its receiver and returns its encapsulated result if invocation was successful,
+ * catching any [Exception] exception that was thrown from the [block] function execution and encapsulating it as a failure.
+ */
+inline fun <T, R> T.tryCatch(block: T.() -> R): Result<R> {
+    return try {
+        Result.success(block())
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
+}
