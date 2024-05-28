@@ -47,14 +47,13 @@ class ReversePolishSequenceTest {
 
     @Test
     fun failure() {
-        val ac = object : ArithmeticContext {
-            override val functions: Map<String, TokenFunctionData> = mapOf()
-            override val operators: Map<String, TokenOperatorData> = mapOf()
-        }
-        val seq = "3+4*2/(1-5)^2^3".asTokenSequence(ac).toReversePolishSequence()
+        val dac = DefaultArithmeticContext
+        val seq = "3+4)*2/(1-5)^2^3".asTokenSequence().toReversePolishSequence()
         val it = seq.iterator()
         assertEquals(Token.Number(3), it.next())
+        assertEquals(Token.Number(4), it.next())
+        assertEquals(Token.Operator(dac.operators["+"]!!), it.next())
         assertFalse(it.hasNext())
-        assertThrows(NoSuchElementException::class.java) { it.next() }
+        assertThrows(IllegalArgumentException::class.java) { it.next() }
     }
 }

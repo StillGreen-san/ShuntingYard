@@ -12,7 +12,7 @@ import java.util.*
 class TokenSequence(val string: String, val arithmeticContext: ArithmeticContext) : Sequence<Token> {
     override fun iterator() = object : Iterator<Token> {
         var remaining = string
-        var nextToken = tryNext()
+        var nextToken = tryNext() //TODO make truly lazy?
         var prevToken: Token = Token.None()
 
         override fun hasNext() = nextToken.isSuccess
@@ -56,7 +56,7 @@ class TokenSequence(val string: String, val arithmeticContext: ArithmeticContext
                 else -> {
                     val name = remaining.substring(0, 1)
                     val operatorData = arithmeticContext.operators.getOrElse(name) {
-                        throw InputMismatchException("unknown operator '{name}'")
+                        throw InputMismatchException("unknown operator '$name'")
                     }
                     Token.Operator(operatorData)
                 }

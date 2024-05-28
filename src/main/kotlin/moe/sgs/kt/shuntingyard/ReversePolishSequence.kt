@@ -6,26 +6,41 @@ package moe.sgs.kt.shuntingyard
  * @property infixSequence of [Token] in infix order to reorder
  */
 class ReversePolishSequence(val infixSequence: Sequence<Token>) : Sequence<Token> {
-    override fun iterator() = iterator {
-        val operatorStack = ArrayList<Token>()
-        for (token in infixSequence) {
-            when (token) {
-                is Token.Number -> yield(token)
-                is Token.Value -> yield(token)
-                is Token.Function -> operatorStack.add(token)
-                is Token.Assignment -> handleOperator(operatorStack, token)
-                is Token.Operator -> handleOperator(operatorStack, token)
-                is Token.Komma -> handleKomma(operatorStack)
-                is Token.OpenParen -> operatorStack.add(token)
-                is Token.CloseParen -> handleCloseParen(operatorStack)
-                is Token.None -> throw IllegalArgumentException("invalid token 'none'")
+    override fun iterator() = object : Iterator<Token> {
+        val iterator = iterator {
+            val operatorStack = ArrayList<Token>()
+            for (token in infixSequence) {
+                when (token) {
+                    is Token.Number -> yield(token)
+                    is Token.Value -> yield(token)
+                    is Token.Function -> operatorStack.add(token)
+                    is Token.Assignment -> handleOperator(operatorStack, token)
+                    is Token.Operator -> handleOperator(operatorStack, token)
+                    is Token.Komma -> handleKomma(operatorStack)
+                    is Token.OpenParen -> operatorStack.add(token)
+                    is Token.CloseParen -> handleCloseParen(operatorStack)
+                    is Token.None -> throw IllegalArgumentException("invalid token 'none'")
+                }
             }
+            do {
+                val topOperator = operatorStack.removeLastOrNull()
+                require(topOperator !is Token.OpenParen) { "mismatched parentheses" }
+                topOperator?.let { yield(it) }
+            } while (topOperator != null)
         }
-        do {
-            val topOperator = operatorStack.removeLastOrNull()
-            require(topOperator !is Token.OpenParen) { "mismatched parentheses" }
-            topOperator?.let { yield(it) }
-        } while (topOperator != null)
+        var nextToken = tryNext() //TODO make truly lazy?
+
+        override fun hasNext(): Boolean = nextToken.isSuccess
+
+        override fun next(): Token {
+            val currentToken = nextToken.getOrThrow()
+            nextToken = tryNext()
+            return currentToken
+        }
+
+        private fun tryNext(): Result<Token> {
+            return tryCatch { iterator.next() }
+        }
     }
 
     private suspend fun SequenceScope<Token>.handleKomma(operatorStack: ArrayList<Token>) {
@@ -48,7 +63,7 @@ class ReversePolishSequence(val infixSequence: Sequence<Token>) : Sequence<Token
         ) {
             yield(operatorStack.removeLast())
         }
-        require(operatorStack.lastOrNull() is Token.OpenParen)
+        require(operatorStack.lastOrNull() is Token.OpenParen) { "mismatched parentheses" }
         operatorStack.removeLast()
         if (operatorStack.lastOrNull() is Token.Function) {
             yield(operatorStack.removeLast())
