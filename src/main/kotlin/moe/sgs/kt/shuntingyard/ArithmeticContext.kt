@@ -48,6 +48,7 @@ data class TokenOperatorData(
  *
  */
 interface ArithmeticContext {
+    val identifiers: Map<String, BigDecimal>
     val functions: Map<String, TokenFunctionData>
     val operators: Map<String, TokenOperatorData>
 }

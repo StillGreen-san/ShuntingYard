@@ -43,9 +43,12 @@ class TokenSequence(val string: String, val arithmeticContext: ArithmeticContext
             }
             if (remaining.first().isLetter()) {
                 val name = remaining.substring(0, remaining.indexOfFirstOrLength { c -> !c.isLetter() })
-                return when (val functionData = arithmeticContext.functions[name]) {
+                when(val functionData = arithmeticContext.functions[name]) {
+                    is TokenFunctionData -> return Token.Function(functionData)
+                }
+                return when (val decimal = arithmeticContext.identifiers[name]) {
                     null -> Token.Value(name)
-                    else -> Token.Function(functionData)
+                    else -> Token.Number(decimal, name)
                 }
             }
             return when (remaining.first()) {
@@ -68,7 +71,7 @@ class TokenSequence(val string: String, val arithmeticContext: ArithmeticContext
 /**
  * Creates a [Sequence] instance that wraps the original [String] returning its [Token]s when being iterated.
  *
- * @param arithmeticContext defaulted to DefaultArithmeticContext
+ * @param arithmeticContext defaulted to [DefaultArithmeticContext]
  * @return [TokenSequence]
  */
 fun String.asTokenSequence(arithmeticContext: ArithmeticContext = DefaultArithmeticContext): TokenSequence =

@@ -1,7 +1,6 @@
 package moe.sgs.kt.shuntingyard
 
-import ch.obermuhlner.math.big.BigDecimalMath.pow
-import ch.obermuhlner.math.big.BigDecimalMath.sin
+import ch.obermuhlner.math.big.BigDecimalMath.*
 import java.math.BigDecimal
 import java.math.MathContext
 
@@ -28,8 +27,12 @@ private fun makeOperatorPair(
     return name to TokenOperatorData.make(name, precedent, associativity, func)
 }
 
-object DefaultArithmeticContext : ArithmeticContext {
+object DefaultArithmeticContext : ArithmeticContext { //TODO add more defaults
     val mathContext: MathContext = MathContext.DECIMAL128
+    override val identifiers: Map<String, BigDecimal> = mapOf(
+        "Pi" to pi(mathContext),
+        "E" to e(mathContext),
+    )
     override val functions: Map<String, TokenFunctionData> = mapOf(
         makeFunctionPair("max") { l, r -> l.max(r) },
         makeFunctionPair("min") { l, r -> l.min(r) },

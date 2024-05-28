@@ -2,6 +2,7 @@ package moe.sgs.kt.shuntingyard
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 import java.util.*
 
 class TokenSequenceTest {
@@ -33,7 +34,7 @@ class TokenSequenceTest {
     @Test
     fun identifiers() {
         val dac = DefaultArithmeticContext
-        val seq = "sin ( max(2 ,3) / 3 *PI)".asTokenSequence()
+        val seq = "sin ( max(2 ,3) / 3 *Pi)".asTokenSequence()
         val it = seq.iterator()
         assertEquals(Token.Function(dac.functions["sin"]!!), it.next())
         assertEquals(Token.OpenParen(), it.next())
@@ -46,7 +47,7 @@ class TokenSequenceTest {
         assertEquals(Token.Operator(dac.operators["/"]!!), it.next())
         assertEquals(Token.Number(3), it.next())
         assertEquals(Token.Operator(dac.operators["*"]!!), it.next())
-        assertEquals(Token.Value("PI"), it.next())
+        assertEquals(Token.Number(dac.identifiers["Pi"]!!, "Pi"), it.next())
         assertEquals(Token.CloseParen(), it.next())
         assertFalse(it.hasNext())
         assertThrows(NoSuchElementException::class.java) { it.next() }
@@ -55,6 +56,7 @@ class TokenSequenceTest {
     @Test
     fun failure() {
         val ac = object : ArithmeticContext {
+            override val identifiers: Map<String, BigDecimal> = mapOf()
             override val functions: Map<String, TokenFunctionData> = mapOf()
             override val operators: Map<String, TokenOperatorData> = mapOf()
         }
