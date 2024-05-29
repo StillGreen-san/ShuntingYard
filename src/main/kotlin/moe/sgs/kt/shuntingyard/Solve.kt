@@ -24,27 +24,27 @@ fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> {
         if(noneNumIdx == -1) {
             return Result.failure(InputMismatchException("unexpected token"))
         }
-        val (args, func) = when (val it = solveStack[noneNumIdx]) {
-            is Token.Function -> Pair(it.numArgs, it.function)
-            is Token.Operator -> Pair(it.numArgs, it.function)
-            is Token.Assignment -> Pair(2) { args ->
-                val dec = args.last()
-                state.identifiers[it.string] = dec
+        val (tokenConsume, callArguments, function) = when (val it = solveStack[noneNumIdx]) {
+            is Token.Function -> Triple(it.numArgs, it.numArgs, it.function)
+            is Token.Operator -> Triple(it.numArgs, it.numArgs, it.function)
+            is Token.Assignment -> Triple(2, 1) { args ->
+                val dec = args.first()
+                state.identifiers[solveStack[noneNumIdx - 2].string] = dec
                 dec
             }
 
             else -> return Result.failure(InputMismatchException("unexpected token"))
         }
-        val result = func.invoke(solveStack.subList(noneNumIdx - args, noneNumIdx).map {
+        val result = function.invoke(solveStack.subList(noneNumIdx - callArguments, noneNumIdx).map {
             when(it) {
                 is Token.Number -> it.value
                 is Token.Value -> state.identifiers.getValue(it.string)
                 else -> return Result.failure(InputMismatchException("unexpected token"))
             }
         })
-        solveStack[noneNumIdx - args] = Token.Number(result)
-        for (i in 1..(args)) {
-            solveStack.removeAt(noneNumIdx - args + 1)
+        solveStack[noneNumIdx - tokenConsume] = Token.Number(result)
+        for (i in 1..(tokenConsume)) {
+            solveStack.removeAt(noneNumIdx - tokenConsume + 1)
         }
     }
     return Result.success((solveStack.first() as Token.Number).value)
