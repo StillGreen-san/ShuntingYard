@@ -10,7 +10,8 @@ import java.util.*
  * @param state [State]
  * @return [Result]
  */
-fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> {
+@Suppress("t")
+fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> { //TODO use tryCatch?
     val solveStack = rpn.toMutableList()
     while (solveStack.size > 1) {
         val noneNumIdx = solveStack.indexOfFirst {
@@ -21,7 +22,7 @@ fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> {
                 else -> false
             }
         }
-        if(noneNumIdx == -1) {
+        if (noneNumIdx == -1) {
             return Result.failure(InputMismatchException("unexpected token"))
         }
         val (tokenConsume, callArguments, function) = when (val it = solveStack[noneNumIdx]) {
@@ -35,10 +36,16 @@ fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> {
 
             else -> return Result.failure(InputMismatchException("unexpected token"))
         }
+        if (noneNumIdx < callArguments) {
+            return Result.failure(InputMismatchException("not enough tokens"))
+        }
         val result = function.invoke(solveStack.subList(noneNumIdx - callArguments, noneNumIdx).map {
-            when(it) {
+            when (it) {
                 is Token.Number -> it.value
-                is Token.Value -> state.identifiers.getValue(it.string)
+                is Token.Value -> {
+                    tryCatch { state.identifiers.getValue(it.string) }.getOrElse { return Result.failure(it) }
+                }
+
                 else -> return Result.failure(InputMismatchException("unexpected token"))
             }
         })
@@ -47,5 +54,10 @@ fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> {
             solveStack.removeAt(noneNumIdx - tokenConsume + 1)
         }
     }
-    return Result.success((solveStack.first() as Token.Number).value)
+    return when (val it = solveStack.firstOrNull()) {
+        is Token.Number -> Result.success(it.value)
+        is Token.Value -> tryCatch { state.identifiers.getValue(it.string) }
+        null -> Result.failure(InputMismatchException("not enough tokens"))
+        else -> Result.failure(InputMismatchException("unexpected token"))
+    }
 }

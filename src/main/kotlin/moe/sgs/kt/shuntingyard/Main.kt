@@ -18,37 +18,34 @@ val ACTIONS = mapOf(
 
 fun main() {
     val state = State()
-    try {
-        while (true) {
-            print(INPUT_PREFIX)
+    while (true) {
+        print(INPUT_PREFIX)
 
-            val input = readln().trim()
-            if (input.isEmpty()) {
+        val input = readln().trim()
+        if (input.isEmpty()) {
+            continue
+        }
+        when (ACTIONS[input]) {
+            KeywordAction.Exit -> {
+                print('\n')
+                break
+            }
+
+            KeywordAction.Reset -> {
+                state.clear()
                 continue
             }
-            when (ACTIONS[input]) {
-                KeywordAction.Exit -> {
-                    print('\n')
-                    break
-                }
 
-                KeywordAction.Reset -> {
-                    state.clear()
-                    continue
-                }
-
-                else -> {}
-            }
-
-            val tokens = input.asTokenSequence()
-            val rpn = tokens.toReversePolishSequence()
-            val result = solve(rpn, state).getOrThrow()
-
-            print(OUTPUT_PREFIX)
-            println(result)
+            else -> {}
         }
-    } catch (e: Exception) {
-        print("\n\nExit: ")
-        println(e.message)
+
+        val tokens = input.asTokenSequence()
+        val rpn = tokens.toReversePolishSequence()
+        val result = solve(rpn, state) //TODO make transactional (to "revert" if err)
+
+        print(OUTPUT_PREFIX)
+        println(result.getOrElse { result.exceptionOrNull()!!.localizedMessage })
     }
 }
+
+//TODO fix "1 1+", "1(", "1)", "1:1" inputs
