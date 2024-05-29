@@ -8,4 +8,7 @@ import java.math.BigDecimal
  */
 class State {
     val identifiers = HashMap<String, BigDecimal>()
+    fun clear() {
+        identifiers.clear()
+    }
 }
