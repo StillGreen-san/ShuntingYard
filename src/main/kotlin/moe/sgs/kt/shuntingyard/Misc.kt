@@ -7,7 +7,7 @@ package moe.sgs.kt.shuntingyard
  */
 fun CharSequence.second(): Char {
     if (length < 2) {
-        throw NoSuchElementException("Char sequence is has no second element.")
+        throw NoSuchElementException("Char sequence has no second element.")
     }
     return this[1]
 }

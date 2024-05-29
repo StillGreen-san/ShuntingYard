@@ -33,4 +33,16 @@ class SolveTest {
         assertTrue(res.isFailure)
         assertTrue(res.exceptionOrNull() is IllegalArgumentException)
     }
+
+    @Test
+    fun surrounded() {
+        val res = solve("(1)".asTokenSequence().toReversePolishSequence(), State())
+        assertEquals(BigDecimal(1), res.getOrThrow())
+    }
+
+    @Test
+    fun extraParen() {
+        val res = solve("1+(1+-1))".asTokenSequence().toReversePolishSequence(), State())
+        assertTrue(res.exceptionOrNull() is IllegalArgumentException)
+    }
 }

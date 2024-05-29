@@ -30,7 +30,7 @@ class ReversePolishSequence(val infixSequence: Sequence<Token>) : Sequence<Token
             } while (topOperator != null)
         }
 
-        override fun hasNext(): Boolean = operatorStack.isNotEmpty() || infixIterator.hasNext()
+        override fun hasNext(): Boolean = rpnIterator.hasNext()
 
         override fun next(): Token {
             return rpnIterator.next()

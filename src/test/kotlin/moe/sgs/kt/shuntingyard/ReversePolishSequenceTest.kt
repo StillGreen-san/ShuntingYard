@@ -53,7 +53,6 @@ class ReversePolishSequenceTest {
         assertEquals(Token.Number(3), it.next())
         assertEquals(Token.Number(4), it.next())
         assertEquals(Token.Operator(dac.operators["+"]!!), it.next())
-        assertTrue(it.hasNext())
-        assertThrows(IllegalArgumentException::class.java) { it.next() }
+        assertThrows(IllegalArgumentException::class.java) { it.hasNext() }
     }
 }
