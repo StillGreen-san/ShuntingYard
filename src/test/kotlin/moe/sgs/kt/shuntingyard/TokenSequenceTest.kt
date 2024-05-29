@@ -63,7 +63,7 @@ class TokenSequenceTest {
         val seq = "3+4*2/(1-5)^2^3".asTokenSequence(ac)
         val it = seq.iterator()
         assertEquals(Token.Number(3), it.next())
-        assertFalse(it.hasNext())
+        assertTrue(it.hasNext())
         assertThrows(InputMismatchException::class.java) { it.next() }
     }
 }

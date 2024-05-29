@@ -7,9 +7,10 @@ package moe.sgs.kt.shuntingyard
  */
 class ReversePolishSequence(val infixSequence: Sequence<Token>) : Sequence<Token> {
     override fun iterator() = object : Iterator<Token> {
-        val iterator = iterator {
-            val operatorStack = ArrayList<Token>()
-            for (token in infixSequence) {
+        val infixIterator = infixSequence.iterator()
+        val operatorStack = ArrayList<Token>()
+        val rpnIterator = iterator {
+            for (token in infixIterator) {
                 when (token) {
                     is Token.Number -> yield(token)
                     is Token.Value -> yield(token)
@@ -28,18 +29,11 @@ class ReversePolishSequence(val infixSequence: Sequence<Token>) : Sequence<Token
                 topOperator?.let { yield(it) }
             } while (topOperator != null)
         }
-        var nextToken = tryNext() //TODO make truly lazy?
 
-        override fun hasNext(): Boolean = nextToken.isSuccess
+        override fun hasNext(): Boolean = operatorStack.isNotEmpty() || infixIterator.hasNext()
 
         override fun next(): Token {
-            val currentToken = nextToken.getOrThrow()
-            nextToken = tryNext()
-            return currentToken
-        }
-
-        private fun tryNext(): Result<Token> {
-            return tryCatch { iterator.next() }
+            return rpnIterator.next()
         }
     }
 

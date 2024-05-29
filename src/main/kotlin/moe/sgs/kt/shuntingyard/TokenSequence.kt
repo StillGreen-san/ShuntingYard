@@ -11,26 +11,18 @@ import java.util.*
  */
 class TokenSequence(val string: String, val arithmeticContext: ArithmeticContext) : Sequence<Token> {
     override fun iterator() = object : Iterator<Token> {
-        var remaining = string
-        var nextToken = tryNext() //TODO make truly lazy?
+        var remaining = string.trim()
         var prevToken: Token = Token.None()
 
-        override fun hasNext() = nextToken.isSuccess
+        override fun hasNext() = remaining.isNotEmpty()
         override fun next(): Token {
-            val currentToken = nextToken.getOrThrow()
-            nextToken = tryNext()
-            return currentToken
-        }
-
-        private fun tryNext(): Result<Token> {
-            remaining = remaining.trimStart()
-            if (remaining.isEmpty()) {
-                return Result.failure(NoSuchElementException("no more tokens left to parse"))
+            if (!hasNext()) {
+                throw NoSuchElementException("no more tokens left to parse")
             }
-            return tryCatch { internalNext() }.onSuccess {
-                remaining = remaining.substring(it.string.length)
-                prevToken = it
-            }
+            val result = internalNext()
+            remaining = remaining.substring(result.string.length).trimStart()
+            prevToken = result
+            return result
         }
 
         private fun internalNext(): Token {
