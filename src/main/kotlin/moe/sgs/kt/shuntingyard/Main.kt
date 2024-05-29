@@ -48,4 +48,4 @@ fun main() {
     }
 }
 
-//TODO fix "1 1+", "1(", "1)", "1:1" inputs
+//TODO fix "1 1+", "1+(1+-1))", "(1)" inputs
