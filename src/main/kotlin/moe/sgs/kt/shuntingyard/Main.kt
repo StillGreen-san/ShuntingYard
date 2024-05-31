@@ -1,11 +1,16 @@
 package moe.sgs.kt.shuntingyard
 
+import kotlin.math.max
+
 const val INPUT_PREFIX = "|> "
 const val OUTPUT_PREFIX = "|: "
+const val ACTION_HEADER = "Action"
+const val KEYWORD_HEADER = "Keywords"
 
 enum class KeywordAction {
     Exit,
     Reset,
+    Help,
 }
 
 val ACTIONS = mapOf(
@@ -14,7 +19,18 @@ val ACTIONS = mapOf(
     ":q" to KeywordAction.Exit,
     "reset" to KeywordAction.Reset,
     "clear" to KeywordAction.Reset,
+    "help" to KeywordAction.Help,
+    "?" to KeywordAction.Help,
 )
+
+fun displayHelp() {
+    val maxNameLen = max(KeywordAction.entries.maxOf { it.name.length }, ACTION_HEADER.length)
+    println("${OUTPUT_PREFIX}${ACTION_HEADER.padEnd(maxNameLen)} : $KEYWORD_HEADER")
+    val actionGroups = ACTIONS.entries.groupBy({ it.value }) { it.key }
+    for (entry in KeywordAction.entries) {
+        println("$OUTPUT_PREFIX${entry.name.padEnd(maxNameLen)} : ${actionGroups[entry]!!.joinToString()}")
+    }
+}
 
 fun main() {
     val state = State()
@@ -36,7 +52,12 @@ fun main() {
                 continue
             }
 
-            else -> {}
+            KeywordAction.Help -> {
+                displayHelp()
+                continue
+            }
+
+            null -> {}
         }
 
         val tokens = input.asTokenSequence()
@@ -48,4 +69,4 @@ fun main() {
     }
 }
 
-//TODO fix "1 1+", "1 1-" inputs
+//TODO fix "1 1+", "1 1-", "= 1" inputs
