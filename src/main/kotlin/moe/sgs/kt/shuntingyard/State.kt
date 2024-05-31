@@ -6,9 +6,16 @@ import java.math.BigDecimal
  * State to persist between calls to [solve]
  *
  */
-class State {
-    val identifiers = HashMap<String, BigDecimal>()
+class State : Transactional {
+    val identifiers = TransactionalHashMap<String, BigDecimal>()
+
     fun clear() {
         identifiers.clear()
     }
+
+    override fun isTransactionActive(): Boolean = identifiers.isTransactionActive()
+
+    override fun commit() = identifiers.commit()
+
+    override fun abort() = identifiers.abort()
 }

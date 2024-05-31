@@ -57,4 +57,4 @@ fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> = tryCat
         null -> throw InputMismatchException("not enough tokens")
         else -> throw InputMismatchException("unexpected token")
     }
-}
+}.finalize(state)

@@ -62,7 +62,7 @@ fun main() {
 
         val tokens = input.asTokenSequence()
         val rpn = tokens.toReversePolishSequence()
-        val result = solve(rpn, state) //TODO make transactional (to "revert" if err)
+        val result = solve(rpn, state)
 
         print(OUTPUT_PREFIX)
         println(result.getOrElse { result.exceptionOrNull()!!.localizedMessage })
