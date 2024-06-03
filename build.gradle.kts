@@ -11,7 +11,8 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("ch.obermuhlner:big-math:2.3.2") //TODO figure out this mess
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    implementation("ch.obermuhlner:big-math:2.3.2")
     implementation("ch.obermuhlner:kotlin-big-math:2.3.0")
 }
 
