@@ -1,3 +1,7 @@
+// SPDX-License-Identifier: MPL-2.0
+
+// SPDX-License-Identifier: MPL-2.0
+
 package moe.sgs.kt.shuntingyard
 
 import kotlin.math.max
