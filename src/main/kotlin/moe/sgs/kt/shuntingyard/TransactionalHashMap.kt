@@ -6,10 +6,15 @@ package moe.sgs.kt.shuntingyard
  * @param K the type of map keys. The map is invariant in its key type.
  * @param V the type of map values. The mutable map is invariant in its value type.
  */
-class TransactionalHashMap<K, V> : MutableMap<K, V>, Transactional {
+class TransactionalHashMap<K, V>() : MutableMap<K, V>, Transactional {
     private var hashMap = HashMap<K, V>()
     private var abortMap = HashMap<K, V>(hashMap)
     private var isTransactionActive = false
+
+    constructor(initialCapacity: Int) : this() {
+        hashMap = HashMap(initialCapacity)
+        abortMap = HashMap(hashMap)
+    }
 
     override fun isTransactionActive() = isTransactionActive
 
@@ -81,3 +86,19 @@ class TransactionalHashMap<K, V> : MutableMap<K, V>, Transactional {
         return hashMap.remove(key)
     }
 }
+
+
+/**
+ * Returns an empty new [TransactionalHashMap].
+ */
+inline fun <K, V> transactionalHashMapOf(): TransactionalHashMap<K, V> = TransactionalHashMap()
+
+/**
+ * Returns a new [TransactionalHashMap] with the specified contents, given as a list of pairs
+ * where the first component is the key and the second is the value.
+ */
+fun <K, V> transactionalHashMapOf(vararg pairs: Pair<K, V>): TransactionalHashMap<K, V> =
+    TransactionalHashMap<K, V>(pairs.size).apply {
+        putAll(pairs)
+        commit()
+    }
