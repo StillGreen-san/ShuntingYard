@@ -26,7 +26,7 @@ class TokenSequence(val string: String, val arithmeticContext: ArithmeticContext
         }
 
         private fun internalNext(): Token {
-            if (remaining.first().isDigit() || (remaining.first() == '-' && remaining.second().isDigit()
+            if (remaining.first().isDigit() || (remaining.first() == '-' && remaining.secondOrNull()?.isDigit() == true
                         && (prevToken !is Token.Number && prevToken !is Token.CloseParen))
             ) {
                 val endOfNumber = remaining.drop(1).indexOfFirstOrLength { c -> !(c.isDigit() || c == '.') } + 1
@@ -35,7 +35,7 @@ class TokenSequence(val string: String, val arithmeticContext: ArithmeticContext
             }
             if (remaining.first().isLetter()) {
                 val name = remaining.substring(0, remaining.indexOfFirstOrLength { c -> !c.isLetter() })
-                when(val functionData = arithmeticContext.functions[name]) {
+                when (val functionData = arithmeticContext.functions[name]) {
                     is TokenFunctionData -> return Token.Function(functionData)
                 }
                 return when (val decimal = arithmeticContext.identifiers[name]) {

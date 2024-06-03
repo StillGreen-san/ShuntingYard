@@ -3,13 +3,20 @@ package moe.sgs.kt.shuntingyard
 /**
  * Returns the second character.
  *
- * @throws NoSuchElementException if the char sequence is empty.
+ * @throws NoSuchElementException if the char sequence has no two elements.
  */
 fun CharSequence.second(): Char {
     if (length < 2) {
         throw NoSuchElementException("Char sequence has no second element.")
     }
     return this[1]
+}
+
+/**
+ * Returns the second character, or `null` if the char sequence has not two elements.
+ */
+fun CharSequence.secondOrNull(): Char? {
+    return if (length < 2) null else this[1]
 }
 
 /**
