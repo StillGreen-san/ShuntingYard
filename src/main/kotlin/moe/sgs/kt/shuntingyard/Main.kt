@@ -68,5 +68,3 @@ fun main() {
         println(result.getOrElse { result.exceptionOrNull()!!.localizedMessage })
     }
 }
-
-//TODO fix "1 1+", "1 1-", "= 1" inputs

@@ -55,3 +55,11 @@ inline fun <R> tryCatch(block: () -> R): Result<R> {
         Result.failure(e)
     }
 }
+
+/**
+ * @return the name of the class, interface, or other entity represented by this `Class` object, without the fully
+ * qualified package name.
+ */
+inline fun <T> Class<T>.nameNoPackage(): String {
+    return this.name.substring(this.packageName.length + 1)
+}

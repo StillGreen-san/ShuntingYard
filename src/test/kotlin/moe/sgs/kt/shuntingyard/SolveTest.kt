@@ -45,4 +45,13 @@ class SolveTest {
         val res = solve("1+(1+-1))".asTokenSequence().toReversePolishSequence(), State())
         assertTrue(res.exceptionOrNull() is IllegalArgumentException)
     }
+
+    @Test
+    fun assignNothing() {
+        val res1 = solve("=1".asTokenSequence().toReversePolishSequence(), State())
+        assertTrue(res1.exceptionOrNull() is InputMismatchException)
+
+        val res2 = solve("x=1+(=1+1)".asTokenSequence().toReversePolishSequence(), State())
+        assertTrue(res2.exceptionOrNull() is InputMismatchException)
+    }
 }
