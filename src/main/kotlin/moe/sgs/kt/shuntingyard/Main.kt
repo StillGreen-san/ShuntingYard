@@ -2,8 +2,11 @@
 
 // SPDX-License-Identifier: MPL-2.0
 
+// SPDX-License-Identifier: MPL-2.0
+
 package moe.sgs.kt.shuntingyard
 
+import java.math.BigDecimal
 import kotlin.math.max
 
 const val INPUT_PREFIX = "|> "
@@ -15,6 +18,14 @@ enum class KeywordAction {
     Exit,
     Reset,
     Help,
+    Constants,
+    Values,
+}
+
+enum class EvalAction {
+    Exit,
+    ReadNext,
+    Solve,
 }
 
 val ACTIONS = mapOf(
@@ -25,6 +36,10 @@ val ACTIONS = mapOf(
     "clear" to KeywordAction.Reset,
     "help" to KeywordAction.Help,
     "?" to KeywordAction.Help,
+    "constants" to KeywordAction.Constants,
+    "const" to KeywordAction.Constants,
+    "values" to KeywordAction.Values,
+    "val" to KeywordAction.Values,
 )
 
 fun displayHelp() {
@@ -36,6 +51,25 @@ fun displayHelp() {
     }
 }
 
+fun printIdentifiers(entries: Set<Map.Entry<String, BigDecimal>>) {
+    for ((key, value) in entries) {
+        print(OUTPUT_PREFIX)
+        println("$key = $value")
+    }
+}
+
+fun handleActions(input: String, state: State): EvalAction {
+    when (ACTIONS[input]) {
+        KeywordAction.Exit -> return EvalAction.Exit
+        KeywordAction.Reset -> state.clear()
+        KeywordAction.Help -> displayHelp()
+        KeywordAction.Constants -> printIdentifiers(DefaultArithmeticContext.identifiers.entries)
+        KeywordAction.Values -> printIdentifiers(state.identifiers.entries)
+        null -> return EvalAction.Solve
+    }
+    return EvalAction.ReadNext
+}
+
 fun main() {
     val state = State()
     while (true) {
@@ -45,23 +79,10 @@ fun main() {
         if (input.isEmpty()) {
             continue
         }
-        when (ACTIONS[input]) {
-            KeywordAction.Exit -> {
-                print('\n')
-                break
-            }
-
-            KeywordAction.Reset -> {
-                state.clear()
-                continue
-            }
-
-            KeywordAction.Help -> {
-                displayHelp()
-                continue
-            }
-
-            null -> {}
+        when (handleActions(input, state)) {
+            EvalAction.Exit -> break
+            EvalAction.ReadNext -> continue
+            EvalAction.Solve -> {}
         }
 
         val tokens = input.asTokenSequence()
@@ -71,4 +92,5 @@ fun main() {
         print(OUTPUT_PREFIX)
         println(result.getOrElse { result.exceptionOrNull()!!.localizedMessage })
     }
+    print('\n')
 }
