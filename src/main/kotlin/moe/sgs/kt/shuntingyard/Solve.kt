@@ -2,6 +2,8 @@
 
 // SPDX-License-Identifier: MPL-2.0
 
+// SPDX-License-Identifier: MPL-2.0
+
 package moe.sgs.kt.shuntingyard
 
 import java.math.BigDecimal
@@ -16,7 +18,7 @@ import java.util.*
  */
 @Suppress("t")
 fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> = tryCatch {
-    val solveStack = rpn.toMutableList() //TODO lazy iteration?
+    val solveStack = rpn.toMutableList()
     while (solveStack.size > 1) {
         val noneNumIdx = solveStack.indexOfFirst {
             when (it) {
@@ -53,7 +55,7 @@ fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> = tryCat
             when (it) {
                 is Token.Number -> it.value
                 is Token.Value -> state.identifiers.getValue(it.string)
-                else -> throw InputMismatchException("unexpected token") //TODO better error descriptions
+                else -> throw InputMismatchException("unexpected token")
             }
         })
         solveStack[noneNumIdx - tokenConsume] = Token.Number(result)

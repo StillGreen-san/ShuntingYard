@@ -2,6 +2,8 @@
 
 // SPDX-License-Identifier: MPL-2.0
 
+// SPDX-License-Identifier: MPL-2.0
+
 package moe.sgs.kt.shuntingyard
 
 import ch.obermuhlner.math.big.BigDecimalMath.*
@@ -31,7 +33,7 @@ private fun makeOperatorPair(
     return name to TokenOperatorData.make(name, precedent, associativity, func)
 }
 
-object DefaultArithmeticContext : ArithmeticContext { //TODO add more defaults
+object DefaultArithmeticContext : ArithmeticContext {
     val mathContext: MathContext = MathContext.DECIMAL128
     override val identifiers: Map<String, BigDecimal> = mapOf(
         "Pi" to pi(mathContext),
