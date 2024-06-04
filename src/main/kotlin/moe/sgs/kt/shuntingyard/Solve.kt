@@ -4,6 +4,8 @@
 
 // SPDX-License-Identifier: MPL-2.0
 
+// SPDX-License-Identifier: MPL-2.0
+
 package moe.sgs.kt.shuntingyard
 
 import java.math.BigDecimal
@@ -31,15 +33,15 @@ fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> = tryCat
         if (noneNumIdx == -1) {
             throw InputMismatchException("unexpected token")
         }
-        val (tokenConsume, callArguments, function) = when (val it = solveStack[noneNumIdx]) {
-            is Token.Function -> Triple(it.numArgs, it.numArgs, it.function)
-            is Token.Operator -> Triple(it.numArgs, it.numArgs, it.function)
+        val (tokenConsume, callArguments, function) = when (val token = solveStack[noneNumIdx]) {
+            is Token.Function -> Triple(token.numArgs, token.numArgs, token.function)
+            is Token.Operator -> Triple(token.numArgs, token.numArgs, token.function)
             is Token.Assignment -> Triple(2, 1) { args ->
                 val dec = args.first()
-                when (solveStack[noneNumIdx - 2]) {
-                    is Token.Value -> state.identifiers[it.string] = dec
+                when (val maybeValue = solveStack[noneNumIdx - 2]) {
+                    is Token.Value -> state.identifiers[maybeValue.string] = dec
                     else -> throw InputMismatchException(
-                        "expected ${Token.Value::class.java.nameNoPackage()} found ${it.javaClass.nameNoPackage()}"
+                        "expected ${Token.Value::class.java.nameNoPackage()} found ${maybeValue.javaClass.nameNoPackage()}"
                     )
                 }
 
