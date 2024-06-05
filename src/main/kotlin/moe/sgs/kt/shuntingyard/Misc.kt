@@ -81,3 +81,22 @@ inline fun <reified T> nameNoPackage(): String {
 inline fun <reified T : Any> nameNoPackage(arg: T): String {
     return arg::class.java.nameNoPackage()
 }
+
+/**
+ * Returns a view of the last [count] elements of this list.
+ * The returned list is backed by this list, so non-structural changes in the returned list are reflected in this list, and vice-versa.
+ *
+ * Structural changes in the base list make the behavior of the view undefined.
+ */
+inline fun <E> List<E>.subListLast(count: Int): List<E> {
+    return this.subList(this.size - count, this.size)
+}
+
+/**
+ * Removes the last [count] elements from this mutable list, throws [NoSuchElementException] if this list has fewer elements.
+ */
+inline fun <E> MutableList<E>.removeLast(count: Int) {
+    for (i in 0..count) {
+        this.removeLast()
+    }
+}
