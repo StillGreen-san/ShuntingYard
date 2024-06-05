@@ -2,6 +2,8 @@
 
 // SPDX-License-Identifier: MPL-2.0
 
+// SPDX-License-Identifier: MPL-2.0
+
 package moe.sgs.kt.shuntingyard
 
 /**
@@ -66,4 +68,20 @@ inline fun <R> tryCatch(block: () -> R): Result<R> {
  */
 inline fun <T> Class<T>.nameNoPackage(): String {
     return this.name.substring(this.packageName.length + 1)
+}
+
+/**
+ * @return the name of the class, interface, or other entity represented by this `Class` object, without the fully
+ * qualified package name.
+ */
+inline fun <reified T> nameNoPackage(): String {
+    return T::class.java.nameNoPackage()
+}
+
+/**
+ * @return the name of the class, interface, or other entity represented by this `Class` object, without the fully
+ * qualified package name.
+ */
+inline fun <reified T : Any> nameNoPackage(arg: T): String {
+    return arg::class.java.nameNoPackage()
 }
