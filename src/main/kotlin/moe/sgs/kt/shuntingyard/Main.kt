@@ -4,6 +4,8 @@
 
 // SPDX-License-Identifier: MPL-2.0
 
+// SPDX-License-Identifier: MPL-2.0
+
 package moe.sgs.kt.shuntingyard
 
 import java.math.BigDecimal
@@ -20,6 +22,7 @@ enum class KeywordAction {
     Help,
     Constants,
     Values,
+    Functions,
 }
 
 enum class EvalAction {
@@ -40,6 +43,8 @@ val ACTIONS = mapOf(
     "const" to KeywordAction.Constants,
     "values" to KeywordAction.Values,
     "val" to KeywordAction.Values,
+    "functions" to KeywordAction.Functions,
+    "func" to KeywordAction.Functions,
 )
 
 fun displayHelp() {
@@ -51,10 +56,13 @@ fun displayHelp() {
     }
 }
 
-fun printIdentifiers(entries: Set<Map.Entry<String, BigDecimal>>) {
+fun printIdentifiers(entries: Set<Map.Entry<String, Any>>) {
     for ((key, value) in entries) {
         print(OUTPUT_PREFIX)
-        println("$key = $value")
+        when (value) {
+            is BigDecimal -> println("$key = $value")
+            is TokenFunctionData -> println("$key(${"arg, ".repeat(value.numArgs).removeSuffix(", ")})")
+        }
     }
 }
 
@@ -65,6 +73,7 @@ fun handleActions(input: String, state: State): EvalAction {
         KeywordAction.Help -> displayHelp()
         KeywordAction.Constants -> printIdentifiers(DefaultArithmeticContext.identifiers.entries)
         KeywordAction.Values -> printIdentifiers(state.identifiers.entries)
+        KeywordAction.Functions -> printIdentifiers(DefaultArithmeticContext.functions.entries)
         null -> return EvalAction.Solve
     }
     return EvalAction.ReadNext
