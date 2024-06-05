@@ -1,12 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 
-// SPDX-License-Identifier: MPL-2.0
-
-// SPDX-License-Identifier: MPL-2.0
-
 package moe.sgs.kt.shuntingyard
 
-import ch.obermuhlner.math.big.BigDecimalMath
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal

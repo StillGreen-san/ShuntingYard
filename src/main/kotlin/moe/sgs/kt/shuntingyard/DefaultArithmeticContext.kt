@@ -1,15 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
 
-// SPDX-License-Identifier: MPL-2.0
-
-// SPDX-License-Identifier: MPL-2.0
-
-// SPDX-License-Identifier: MPL-2.0
-
 package moe.sgs.kt.shuntingyard
 
 import ch.obermuhlner.math.big.BigDecimalMath.*
-import ch.obermuhlner.math.big.kotlin.bigdecimal.root
 import java.math.BigDecimal
 import java.math.MathContext
 

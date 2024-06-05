@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
 
-// SPDX-License-Identifier: MPL-2.0
-
 package moe.sgs.kt.shuntingyard
 
 import org.junit.jupiter.api.Test
