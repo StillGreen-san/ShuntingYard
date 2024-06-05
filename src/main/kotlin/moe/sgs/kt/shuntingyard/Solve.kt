@@ -6,10 +6,13 @@
 
 // SPDX-License-Identifier: MPL-2.0
 
+// SPDX-License-Identifier: MPL-2.0
+
 package moe.sgs.kt.shuntingyard
 
 import java.math.BigDecimal
 import java.util.*
+import kotlin.math.max
 
 /**
  * Solve an arithmetic expression in reverse polish notation
@@ -20,6 +23,12 @@ import java.util.*
  */
 @Suppress("t")
 fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> = tryCatch {
+    val couldNotFindOperation =
+        "did not find expected token of ${nameNoPackage<Token.Function>()}, ${nameNoPackage<Token.Operator>()} or ${nameNoPackage<Token.Assignment>()}"
+    val expectedNumOrValFound = { it: Any ->
+        "expected ${nameNoPackage<Token.Number>()} or ${nameNoPackage<Token.Value>()} found ${nameNoPackage(it)}"
+    }
+
     val solveStack = rpn.toMutableList()
     while (solveStack.size > 1) {
         val noneNumIdx = solveStack.indexOfFirst {
@@ -31,7 +40,7 @@ fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> = tryCat
             }
         }
         if (noneNumIdx == -1) {
-            throw InputMismatchException("unexpected token")
+            throw InputMismatchException(couldNotFindOperation)
         }
         val (tokenConsume, callArguments, function) = when (val token = solveStack[noneNumIdx]) {
             is Token.Function -> Triple(token.numArgs, token.numArgs, token.function)
@@ -41,23 +50,25 @@ fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> = tryCat
                 when (val maybeValue = solveStack[noneNumIdx - 2]) {
                     is Token.Value -> state.identifiers[maybeValue.string] = dec
                     else -> throw InputMismatchException(
-                        "expected ${Token.Value::class.java.nameNoPackage()} found ${maybeValue.javaClass.nameNoPackage()}"
+                        "expected ${nameNoPackage<Token.Value>()} found ${nameNoPackage(maybeValue)}"
                     )
                 }
 
                 dec
             }
 
-            else -> throw InputMismatchException("unexpected token")
+            else -> throw InputMismatchException(couldNotFindOperation)
         }
         if (noneNumIdx < callArguments || noneNumIdx < tokenConsume) {
-            throw InputMismatchException("not enough tokens")
+            throw InputMismatchException(
+                "expected ${max(callArguments, tokenConsume)} more tokens only found ${noneNumIdx - 1}"
+            )
         }
         val result = function.invoke(solveStack.subList(noneNumIdx - callArguments, noneNumIdx).map {
             when (it) {
                 is Token.Number -> it.value
                 is Token.Value -> state.identifiers.getValue(it.string)
-                else -> throw InputMismatchException("unexpected token")
+                else -> throw InputMismatchException(expectedNumOrValFound(it))
             }
         })
         solveStack[noneNumIdx - tokenConsume] = Token.Number(result)
@@ -68,7 +79,7 @@ fun solve(rpn: ReversePolishSequence, state: State): Result<BigDecimal> = tryCat
     when (val it = solveStack.firstOrNull()) {
         is Token.Number -> it.value
         is Token.Value -> state.identifiers.getValue(it.string)
-        null -> throw InputMismatchException("not enough tokens")
-        else -> throw InputMismatchException("unexpected token")
+        null -> throw InputMismatchException("no tokens left after evaluation")
+        else -> throw InputMismatchException(expectedNumOrValFound(it))
     }
 }.finalize(state)
